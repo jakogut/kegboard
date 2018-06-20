@@ -20,7 +20,7 @@ class MessageTestCase(unittest.TestCase):
 
     m = kegboard.get_message_for_bytes(hello_bytes)
     self.assertEqual(m.firmware_version, 3)
-    print m
+    print(m)
 
 
 class KegboardReaderTestCase(unittest.TestCase):
@@ -31,10 +31,10 @@ class KegboardReaderTestCase(unittest.TestCase):
     try:
       # read the first 8 messages
       messages = []
-      for i in xrange(8):
+      for i in range(8):
         messages.append(kbr.read_message_nonblock())
-      print 'messages:'
-      print '\n'.join('  %s' % msg for msg in messages)
+      print('messages:')
+      print('\n'.join('  %s' % msg for msg in messages))
 
       hello_message = kegboard.HelloMessage()
       hello_message.SetValue('firmware_version', 3)

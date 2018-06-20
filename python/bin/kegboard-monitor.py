@@ -44,18 +44,18 @@ class KegboardMonitorApp(app.App):
   def _MainLoop(self):
     try:
       while True:
-        print 'Waiting for a kegboard ...'
+        print('Waiting for a kegboard ...')
         board = kegboard.wait_for_kegboard()
-        print 'Found: %s' % board
-        print 'Listening to board ...'
+        print('Found: %s' % board)
+        print('Listening to board ...')
 
         board.open()
         try:
           while True:
-            print board.read_message()
-        except IOError, e:
-          print 'Error, closing board: %s' % e
-          print ''
+            print(board.read_message())
+        except IOError as e:
+          print('Error, closing board: %s' % e)
+          print('')
         finally:
           board.close_quietly()
     except KeyboardInterrupt:
