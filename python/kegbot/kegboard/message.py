@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Kegboard.  If not, see <http://www.gnu.org/licenses/>.
 
-import cStringIO
+import io
 import struct
 
 from kegbot.util import util
@@ -50,7 +50,7 @@ class StructField(Field):
 
   def ParseValue(self, value):
     if len(value) != self._packed_size:
-      raise ValueError, "Bad length, must be exactly %i bytes" % (self._packed_size,)
+      raise ValueError("Bad length, must be exactly %i bytes" % (self._packed_size,))
     return struct.unpack(self._STRUCT_FORMAT, value)[0]
 
   def ToBytes(self, value):
@@ -126,7 +126,7 @@ class Message(util.BaseMessage):
   def __init__(self, initial=None, bytes=None, payload_bytes=None, **kwargs):
     util.BaseMessage.__init__(self, initial, **kwargs)
     self._tag_to_field = {}
-    for field in self._fields.itervalues():
+    for field in self._fields.values():
       self._tag_to_field[field.tagnum] = field
     if bytes is not None:
       self.UnpackFromBytes(bytes)
@@ -135,7 +135,7 @@ class Message(util.BaseMessage):
 
   def UnpackFromBytes(self, bytes):
     if len(bytes) < 16:
-      raise ValueError, "Not enough bytes"
+      raise ValueError("Not enough bytes")
 
     header = bytes[:12]
     payload = bytes[12:-4]
@@ -145,7 +145,7 @@ class Message(util.BaseMessage):
     prefix, message_id, message_len = struct.unpack('<8sHH', header)
 
     if len(payload) != message_len:
-      raise ValueError, "Payload size does not match tag"
+      raise ValueError("Payload size does not match tag")
 
     # TODO(mikey): assert checked_crc == 0
     checked_crc = crc16.crc16_ccitt(crcd_bytes)
@@ -168,8 +168,8 @@ class Message(util.BaseMessage):
     return length
 
   def ToBytes(self):
-    payload = cStringIO.StringIO()
-    for field_name, field in self._fields.iteritems():
+    payload = io.StringIO()
+    for field_name, field in self._fields.items():
       field_bytes = field.ToBytes(self._values[field_name])
       payload.write(struct.pack('<BB', field.tagnum, len(field_bytes)))
       payload.write(field_bytes)
@@ -177,7 +177,7 @@ class Message(util.BaseMessage):
     payload_str = payload.getvalue()
     payload.close()
 
-    out = cStringIO.StringIO()
+    out = io.StringIO()
     out.write(KBSP_PREFIX)
     out.write(struct.pack('<HH', self.MESSAGE_ID, len(payload_str)))
     out.write(payload_str)
@@ -254,13 +254,13 @@ MESSAGE_ID_TO_CLASS = {}
 for cls in Message.__subclasses__():
   idnum = cls.MESSAGE_ID
   if idnum in MESSAGE_ID_TO_CLASS:
-    raise RuntimeError, "More than one message for id: %i" % (idnum,)
+    raise RuntimeError("More than one message for id: %i" % (idnum,))
   MESSAGE_ID_TO_CLASS[idnum] = cls
 
 
 def get_message_for_bytes(bytes):
   if len(bytes) < 6:
-    raise ValueError, "Not enough bytes"
+    raise ValueError("Not enough bytes")
   prefix, message_id = struct.unpack('<8sH', bytes[:10])
   cls = MESSAGE_ID_TO_CLASS.get(message_id)
   if not cls:

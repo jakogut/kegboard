@@ -41,10 +41,10 @@ class KegboardMonitorApp(app.App):
   def _MainLoop(self):
     try:
       ping_message = kegboard.PingCommand()
-      print 'Waiting for a kegboard ...'
+      print('Waiting for a kegboard ...')
       board = kegboard.wait_for_kegboard()
-      print 'Found: %s' % board
-      print 'Listening to board ...'
+      print('Found: %s' % board)
+      print('Listening to board ...')
 
       board.open()
       try:
@@ -60,9 +60,9 @@ class KegboardMonitorApp(app.App):
                 self._logger.info(m)
               time.sleep(1.0)
 
-      except IOError, e:
-        print 'Error, closing board: %s' % e
-        print ''
+      except IOError as e:
+        print('Error, closing board: %s' % e)
+        print('')
       finally:
         board.close_quietly()
     except KeyboardInterrupt:

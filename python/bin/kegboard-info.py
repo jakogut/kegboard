@@ -34,18 +34,18 @@ class KegboardMonitorApp(app.App):
     self._logger.debug('Waiting for kegboard ...')
     board = kegboard.get_kegboard()
     if not board:
-      print 'No kegboard found.'
+      print('No kegboard found.')
       sys.exit(1)
     board.open()
     self._logger.debug('Got kegboard: %s' % board)
 
     msg = board.wait_for_ping()
     if not msg:
-      print 'Gave up pinging kegboard!'
+      print('Gave up pinging kegboard!')
       sys.exit(1)
 
-    print '%s: firmware_version=%s serial_number=%s' % (board, msg.firmware_version,
-        msg.serial_number)
+    print('%s: firmware_version=%s serial_number=%s' % (board, msg.firmware_version,
+        msg.serial_number))
 
 
 if __name__ == '__main__':

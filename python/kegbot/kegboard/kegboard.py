@@ -169,7 +169,7 @@ class Kegboard:
         message_id, message_len = struct.unpack('<HH', header[8:])
         try:
           return get_message_by_id(message_id, payload)
-        except UnknownMessageError, e:
+        except UnknownMessageError as e:
           continue
 
       else:
@@ -212,7 +212,7 @@ class Kegboard:
 
   def wait_for_ping(self, attempts=5):
     self.drain_messages()
-    for i in xrange(attempts):
+    for i in range(attempts):
       self.ping()
       messages = [self.read_message(timeout=1)] + self.drain_messages()
       for message in messages:
